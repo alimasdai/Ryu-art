@@ -2,7 +2,7 @@ const BASE_URL="https://www.sankavollerei.com/comic"
 
 export async function getHome() {
     try {
-        const response = await fetch(`${BASE_URL}/homepage`)
+        const response = await fetch(`${BASE_URL}/home`)
         if (!response.ok) throw new Error("Gagal ambil data home");
 
         const data = await response.json()
@@ -116,6 +116,19 @@ export async function getChapter(id) {
         return data
     } catch (error) {
         console.error("Error fetching chapter data:", error)
+        return null
+    }
+}
+
+export async function getGenres() {
+    try {
+        const response = await fetch(`${BASE_URL}/genres`)
+        if (!response.ok) throw new Error("Gagal ambil data trending");
+
+        const data = await response.json()
+        return data
+    } catch (error) {
+        console.error("Error fetching trending data:", error)
         return null
     }
 }

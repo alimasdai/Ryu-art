@@ -1,26 +1,581 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
-/* LIGHT MODE (default) */
-@theme {
-  --color-bg: #F8FAFC;
-  --color-card: #FFFFFF;
-  --color-text: #0F172A;
-  --color-secondary-text: #64748B;
 
-  --color-primary: #22C55E;
-  --color-secondary: #3B82F6;
-  --color-accent: #F59E0B;
+/* LIGHT MODE (PAPER THEME) */
+
+
+/* ===== REMOVE ALL SCROLLBARS ===== */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-/* DARK MODE */
-.dark {
-  --color-bg: #0F172A;
-  --color-card: #1E293B;
-  --color-text: #F8FAFC;
-  --color-secondary-text: #94A3B8;
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
-  --color-primary: #22C55E;
-  --color-secondary: #3B82F6;
-  --color-accent: #F59E0B;
+*::-webkit-scrollbar{
+  display:none;
+}
+
+*{
+  scrollbar-width:none;
+}
+
+/* ===================================================== */
+/* PAPER FLOAT */
+/* ===================================================== */
+
+@keyframes paperFloat {
+
+  0%{
+    transform:
+      rotate(var(--rotate))
+      translateY(0px);
+  }
+
+  25%{
+    transform:
+      rotate(calc(var(--rotate) - 1deg))
+      translateY(-4px)
+      translateX(-1px);
+  }
+
+  50%{
+    transform:
+      rotate(calc(var(--rotate) + 1deg))
+      translateY(-8px)
+      translateX(1px);
+  }
+
+  75%{
+    transform:
+      rotate(calc(var(--rotate) - .5deg))
+      translateY(-4px)
+      translateX(-1px);
+  }
+
+  100%{
+    transform:
+      rotate(var(--rotate))
+      translateY(0px);
+  }
+}
+
+/* ===================================================== */
+/* PAPER CARD */
+/* ===================================================== */
+
+/* =========================================================
+   PAPER STACK / SCATTER EFFECT
+========================================================= */
+
+.paper-card{
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  background: #fffdf8;
+
+  transition:
+    transform .28s cubic-bezier(.2,.8,.2,1),
+    box-shadow .28s ease,
+    filter .28s ease;
+
+  will-change: transform;
+
+  /* default paper rotation */
+  transform:
+    rotate(var(--rotate, 0deg))
+    translateY(0px);
+
+  /* realistic paper shadow */
+  box-shadow:
+    0 2px 3px rgba(0,0,0,.08),
+    0 8px 14px rgba(0,0,0,.10),
+    8px 10px 0 rgba(0,0,0,.08);
+
+  border: 1px solid rgba(0,0,0,.12);
+}
+
+/* =========================================================
+   PAPER LINE
+========================================================= */
+
+.paper-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 24px,
+      rgba(50,70,120,.11) 25px
+    );
+
+  opacity:.9;
+  pointer-events:none;
+  z-index:2;
+}
+
+/* =========================================================
+   PAPER LIGHT + FOLD
+========================================================= */
+
+.paper-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.75) 0%,
+      rgba(255,255,255,.25) 22%,
+      transparent 45%
+    );
+
+  mix-blend-mode: soft-light;
+
+  pointer-events:none;
+  z-index:3;
+}
+
+/* =========================================================
+   RANDOM SCATTER POSITION
+========================================================= */
+
+.paper-scatter-1{
+  --rotate:-2.8deg;
+  transform:
+    rotate(-2.8deg)
+    translateY(6px);
+}
+
+.paper-scatter-2{
+  --rotate:1.8deg;
+  transform:
+    rotate(1.8deg)
+    translateY(-2px);
+}
+
+.paper-scatter-3{
+  --rotate:-1deg;
+  transform:
+    rotate(-1deg)
+    translateX(-3px);
+}
+
+.paper-scatter-4{
+  --rotate:2.6deg;
+  transform:
+    rotate(2.6deg)
+    translateY(4px);
+}
+
+.paper-scatter-hero{
+  --rotate:-1.2deg;
+  transform:
+    rotate(-1.2deg)
+    translateY(2px);
+}
+
+.paper-scatter-header{
+  --rotate:.8deg;
+  transform:
+    rotate(.8deg);
+}
+
+/* =========================================================
+   HOVER = PAPER LIFT
+========================================================= */
+
+.paper-hover:hover{
+  z-index:50;
+
+  transform:
+    rotate(calc(var(--rotate) * 0.35))
+    translateY(-14px)
+    scale(1.025);
+
+  box-shadow:
+    0 10px 18px rgba(0,0,0,.16),
+    0 22px 34px rgba(0,0,0,.18),
+    16px 18px 0 rgba(0,0,0,.12);
+
+  filter: brightness(1.01);
+}
+
+/* image ikut naik natural */
+.paper-hover:hover img{
+  transform: scale(1.04);
+}
+
+/* =========================================================
+   PAPER EDGE
+========================================================= */
+
+.paper-edge{
+  position:relative;
+}
+
+.paper-edge::after{
+  content:"";
+  position:absolute;
+  bottom:-10px;
+  left:8px;
+  right:8px;
+  height:14px;
+
+  background:rgba(0,0,0,.08);
+
+  filter:blur(10px);
+
+  z-index:-1;
+  border-radius:50%;
+}
+
+/* =========================================================
+   DESK DEPTH
+========================================================= */
+
+.paper-deep{
+  backdrop-filter: blur(0.5px);
+}
+
+/* ========================================
+   REALISTIC PAPER TAPE
+======================================== */
+
+.paper-clip{
+  position:relative;
+}
+
+/* BASE */
+.paper-clip::before{
+  content:"";
+  position:absolute;
+  z-index:40;
+  pointer-events:none;
+
+  width:78px;
+  height:24px;
+
+  opacity:.92;
+
+  border-radius:3px;
+
+  backdrop-filter: blur(1px);
+
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.18);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.50),
+      rgba(255,255,255,.18)
+    );
+
+  /* texture */
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+}
+
+/* ========================================
+   POSITIONS
+======================================== */
+
+/* RIGHT TOP */
+.paper-clip-rt::before{
+  top:-11px;
+  right:18px;
+
+  transform:
+    rotate(8deg);
+}
+
+/* LEFT TOP */
+.paper-clip-lt::before{
+  top:-10px;
+  left:18px;
+
+  transform:
+    rotate(-10deg);
+}
+
+/* RIGHT BOTTOM */
+.paper-clip-rb::before{
+  bottom:-10px;
+  right:20px;
+
+  transform:
+    rotate(-8deg);
+}
+
+/* LEFT BOTTOM */
+.paper-clip-lb::before{
+  bottom:-10px;
+  left:18px;
+
+  transform:
+    rotate(11deg);
+}
+
+/* ========================================
+   COLORS
+======================================== */
+
+.paper-clip-blue::before{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(130,190,255,.95),
+      rgba(75,135,255,.72)
+    );
+}
+
+.paper-clip-yellow::before{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,235,140,.95),
+      rgba(255,210,90,.72)
+    );
+}
+
+.paper-clip-red::before{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,145,145,.95),
+      rgba(255,95,95,.72)
+    );
+}
+
+.paper-clip-green::before{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(130,255,190,.95),
+      rgba(60,215,140,.72)
+    );
+}
+
+/* ========================================
+   HOVER
+======================================== */
+
+.paper-hover:hover.paper-clip::before{
+  transform:
+    scale(1.03)
+    rotate(12deg);
+
+  transition:
+    transform .25s ease;
+}
+
+/* sobekan sudut */
+.paper-torn::after{
+  content:"";
+  position:absolute;
+  bottom:-1px;
+  left:0;
+
+  width:100%;
+  height:18px;
+
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 8px,
+      white 8px 16px
+    );
+
+  opacity:.9;
+}
+
+/* polaroid */
+.polaroid{
+  padding:
+    10px
+    10px
+    30px
+    10px;
+}
+
+/* shadow bertumpuk */
+.paper-stack{
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.6),
+    0 8px 18px rgba(0,0,0,.18),
+    8px 8px 0 rgba(0,0,0,.08);
+}
+
+/* ========================================= */
+/* DESK OBJECT */
+/* ========================================= */
+
+.desk-clip{
+  position:absolute;
+  width:42px;
+  height:14px;
+  border:3px solid rgba(255,255,255,.7);
+  border-radius:20px;
+  opacity:.45;
+  pointer-events:none;
+  z-index:2;
+}
+
+.desk-clip::before{
+  content:"";
+  position:absolute;
+  inset:3px;
+  border:2px solid rgba(255,255,255,.35);
+  border-radius:20px;
+}
+
+/* ========================================= */
+
+.desk-tape{
+  position:absolute;
+  width:90px;
+  height:28px;
+  background:rgba(255,245,180,.18);
+  backdrop-filter:blur(2px);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 3px 10px rgba(0,0,0,.12);
+  pointer-events:none;
+}
+
+/* ========================================= */
+
+.desk-staple{
+  position:absolute;
+  width:32px;
+  height:14px;
+  border-top:3px solid rgba(255,255,255,.55);
+  border-left:3px solid rgba(255,255,255,.55);
+  border-right:3px solid rgba(255,255,255,.55);
+  border-radius:10px 10px 0 0;
+  opacity:.55;
+  pointer-events:none;
+}
+
+/* ========================================= */
+
+.desk-doodle{
+  position:absolute;
+  width:80px;
+  height:80px;
+  border:2px dashed rgba(255,255,255,.18);
+  border-radius:999px;
+  pointer-events:none;
+}
+
+/* ========================================= */
+
+.desk-ring{
+  position:absolute;
+  width:18px;
+  height:18px;
+  border:3px solid rgba(255,255,255,.28);
+  border-radius:999px;
+  pointer-events:none;
+}
+
+/* ========================================= */
+/* RANDOM POSITION */
+/* ========================================= */
+
+.clip-1{
+  top:20px;
+  left:10px;
+  rotate:-18deg;
+}
+
+.clip-2{
+  right:18px;
+  top:180px;
+  rotate:14deg;
+}
+
+.tape-1{
+  top:60px;
+  right:120px;
+  rotate:-12deg;
+}
+
+.tape-2{
+  bottom:20px;
+  left:140px;
+  rotate:8deg;
+}
+
+.staple-1{
+  left:40px;
+  bottom:120px;
+  rotate:18deg;
+}
+
+.staple-2{
+  right:40px;
+  bottom:80px;
+  rotate:-14deg;
+}
+
+.doodle-1{
+  top:120px;
+  left:18%;
+}
+
+.doodle-2{
+  bottom:40px;
+  right:14%;
+}
+
+.ring-1{
+  top:240px;
+  left:60px;
+}
+
+.ring-2{
+  bottom:200px;
+  right:30px;
+}
+
+/* ========================================= */
+/* MOBILE */
+/* ========================================= */
+
+@media(max-width:768px){
+
+  .desk-clip{
+    width:28px;
+    height:10px;
+  }
+
+  .desk-tape{
+    width:58px;
+    height:18px;
+  }
+
+  .desk-doodle{
+    width:44px;
+    height:44px;
+  }
+
+  .desk-staple{
+    scale:.8;
+  }
 }

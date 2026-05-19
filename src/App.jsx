@@ -1,16 +1,14 @@
 import { useState } from 'react'
 import Header from './components/Header'
 import Content from './components/Content'
-import Footer from './components/Footer'
 
 function App() {
 
   return (
     <>
-      <div className='min-h-screen bg-bg w-screen'>
+      <div className='min-h-screen overflow-x-hidden w-screen'>
         <Header/>
         <Content/>
-        <Footer/>
       </div>
     </>
   )

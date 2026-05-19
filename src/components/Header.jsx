@@ -1,176 +1,188 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Menu,
-  Home,
-  Flame,
-  Clock,
-  List,
-  Star,
-  Sun,
-  Moon,
-  X
-} from "lucide-react";
+import { Menu, Home, Flame, Clock, List, Star, Search, Tag, X } from "lucide-react";
 
-export default function Header() {
+const NAV_ITEMS = [
+  { label: "Home", icon: Home, path: "/" },
+  { label: "Popular", icon: Flame, path: "/popular" },
+  { label: "Latest", icon: Clock, path: "/latest" },
+  { label: "List", icon: List, path: "/list" },
+  { label: "Trending", icon: Star, path: "/trending" },
+  { label: "Genres", icon: Tag, path: "/genres" },
+];
+
+export default function HomeHeader() {
   const navigate = useNavigate();
 
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(false);
-
   const [menuOpen, setMenuOpen] = useState(false);
-  const [themeOpen, setThemeOpen] = useState(false);
 
   const isTyping = query.length > 0;
 
-  function applyTheme(mode) {
-    const root = document.documentElement;
-
-    if (mode === "dark") root.classList.add("dark");
-    else root.classList.remove("dark");
-
-    localStorage.setItem("theme", mode);
-    setThemeOpen(false);
-  }
-
-  const go = (path) => {
-    navigate(path);
-    setMenuOpen(false);
-  };
-
-  /* 🔥 HANDLE SEARCH */
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     const q = query.trim();
-
-    if (q.length < 2) return; // minimal input
-
+    if (q.length < 2) return;
     navigate(`/search?q=${encodeURIComponent(q)}`);
     setFocus(false);
-  };
+    setMenuOpen(false);
+  }, [query, navigate]);
+
+  const go = useCallback((path) => {
+    navigate(path);
+    setMenuOpen(false);
+  }, [navigate]);
+
+  const clearSearch = useCallback(() => setQuery(""), []);
 
   return (
-    <header className="w-full h-16 z-20 flex items-center justify-center bg-bg relative">
-      <div className="w-[95%] h-[90%] rounded-xl bg-card shadow-sm flex items-center justify-between px-4 gap-4">
+    <>
+      {/* HEADER */}
+      <header className="paper-card paper-edge paper-scatter-header relative flex items-center justify-between gap-3 bg-white px-3 sm:px-4 py-3 mb-5 z-30">
 
         {/* LEFT */}
-        <div className="h-2/3 flex items-center gap-2 relative">
-          <div
-            onClick={() => setThemeOpen(!themeOpen)}
-            className="h-full aspect-square rounded-full bg-primary flex items-center justify-center cursor-pointer"
-          >
-            <Sun size={16} className="text-black" />
-          </div>
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
 
-          <h1
+          {/* LOGO */}
+          <div
             onClick={() => navigate("/")}
-            className="text-sm font-extrabold text-text hidden sm:block cursor-pointer"
+            className="flex items-center gap-2 cursor-pointer min-w-0"
           >
-            DAMNDELION
-          </h1>
+            <img src="/logo.png" alt="logo" className="w-7 h-7 object-contain" />
 
-          {/* THEME */}
-          <div
-            className={`absolute top-12 left-0 bg-card border border-white/10 rounded-xl p-2 transition-all text-text duration-300 ${
-              themeOpen
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-2 pointer-events-none"
-            }`}
-          >
-            <button
-              onClick={() => applyTheme("light")}
-              className="flex items-center gap-2 px-3 py-2 hover:bg-bg rounded-lg w-full"
-            >
-              <Sun size={16} /> Light
-            </button>
-
-            <button
-              onClick={() => applyTheme("dark")}
-              className="flex items-center gap-2 px-3 py-2 hover:bg-bg rounded-lg w-full"
-            >
-              <Moon size={16} /> Dark
-            </button>
+            <div className="min-w-0">
+              <p className="text-[8px] sm:text-[9px] tracking-[0.25em] uppercase opacity-50 truncate">
+                Manga Archive
+              </p>
+              <h1 className="text-xs sm:text-sm font-black truncate">
+                Manga Field Notes
+              </h1>
+            </div>
           </div>
+
         </div>
 
-        {/* 🔥 SEARCH */}
+        {/* SEARCH */}
         <div
-          className={`h-10 flex items-center relative transition-all duration-300 ${
-            focus ? "w-64 md:w-80" : "w-40 md:w-56"
+          className={`hidden md:flex relative h-10 transition-all duration-300 ${
+            focus ? "w-[320px]" : "w-[220px]"
           }`}
         >
           <input
-            type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setFocus(true)}
-            onBlur={() => setTimeout(() => setFocus(false), 100)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
-            }}
-            placeholder={isTyping ? "Tekan Enter..." : "Cari judul..."}
-            className="w-full h-full px-4 pr-10 rounded-full bg-bg text-text text-sm outline-none placeholder:text-secondaryText focus:ring-2 focus:ring-primary"
+            onBlur={() => setTimeout(() => setFocus(false), 120)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            placeholder={isTyping ? "Press enter..." : "Search manga..."}
+            className="w-full h-full pl-4 pr-11 border border-black/10 bg-black/[0.03] text-sm outline-none"
           />
 
-          {/* 🔥 CLEAR BUTTON */}
-          {isTyping && (
+          {!isTyping ? (
+            <Search size={15} className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50" />
+          ) : (
             <button
-              onClick={() => setQuery("")}
-              className="absolute right-3 text-secondary-text hover:text-text"
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100"
             >
               <X size={14} />
             </button>
           )}
         </div>
 
-        {/* MENU BUTTON */}
-        <div className="h-2/3 flex items-center">
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="h-full aspect-square rounded-full bg-primary flex items-center justify-center"
-          >
-            <Menu size={18} className="text-black" />
-          </button>
-        </div>
-      </div>
+        {/* RIGHT */}
+        <div className="flex items-center gap-2 shrink-0">
 
-      {/* SIDE MENU */}
+          <button className="md:hidden w-9 h-9 flex items-center justify-center border border-black/10 bg-black/[0.03]">
+            <Search size={15} />
+          </button>
+
+          <button
+            onClick={() => setMenuOpen(true)}
+            className="w-9 h-9 flex items-center justify-center border border-black/10 bg-black/[0.03]"
+          >
+            <Menu size={16} />
+          </button>
+
+        </div>
+      </header>
+
+      {/* MENU */}
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-card border-l border-white/10 text-text p-5 transition-transform duration-300 z-50 ${
+        className={`fixed top-0 right-0 h-full w-[280px] bg-white shadow-2xl z-[60] transition-transform duration-300 ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex flex-col gap-4 mt-10">
+        {/* HEADER */}
+        <div className="flex items-center justify-between px-5 py-5 border-b border-black/10">
+          <div>
+            <p className="text-[8px] tracking-[0.25em] uppercase opacity-50">
+              Navigation
+            </p>
+            <h2 className="text-sm font-black mt-1">Manga Notes</h2>
+          </div>
 
-          <button onClick={() => go("/")} className="flex items-center gap-3 hover:text-primary">
-            <Home size={18} /> Home
+          <button
+            onClick={() => setMenuOpen(false)}
+            className="w-9 h-9 flex items-center justify-center border border-black/10"
+          >
+            <X size={16} />
           </button>
-
-          <button onClick={() => go("/popular")} className="flex items-center gap-3 hover:text-primary">
-            <Flame size={18} /> Popular
-          </button>
-
-          <button onClick={() => go("/latest")} className="flex items-center gap-3 hover:text-primary">
-            <Clock size={18} /> Latest
-          </button>
-
-          <button onClick={() => go("/list")} className="flex items-center gap-3 hover:text-primary">
-            <List size={18} /> List
-          </button>
-
-          <button onClick={() => go("/trending")} className="flex items-center gap-3 hover:text-primary">
-            <Star size={18} /> Trending
-          </button>
-
         </div>
+
+{/* ITEMS */}
+<div className="p-4 flex flex-col">
+
+  {NAV_ITEMS.map(({ label, icon: Icon, path }, i) => (
+    <div key={path} className="relative">
+
+      <button
+        onClick={() => go(path)}
+        className="
+          w-full
+          flex
+          items-center
+          gap-3
+          px-3
+          py-3
+          text-sm
+          font-medium
+          text-black/80
+          hover:bg-black/[0.04]
+          transition
+        "
+      >
+
+        {/* ICON BOX (biar sejajar semua) */}
+        <div className="w-6 h-6 flex items-center justify-center shrink-0">
+          <Icon size={16} />
+        </div>
+
+        {/* LABEL */}
+        <span className="leading-none">
+          {label}
+        </span>
+
+      </button>
+
+      {/* DIVIDER LINE */}
+      {i !== NAV_ITEMS.length - 1 && (
+        <div className="absolute left-3 right-3 bottom-0 h-[1px] bg-black/5" />
+      )}
+
+    </div>
+  ))}
+
+</div>
       </div>
 
       {/* OVERLAY */}
       {menuOpen && (
         <div
           onClick={() => setMenuOpen(false)}
-          className="fixed inset-0 bg-black/50 z-40"
+          className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50"
         />
       )}
-    </header>
+    </>
   );
 }

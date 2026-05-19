@@ -1,33 +1,45 @@
-# Damndelion
+<div align="center">
 
-Damndelion adalah platform web untuk membaca manga, manhwa, dan manhua secara gratis dengan tampilan modern, ringan, dan fokus pada kenyamanan membaca.
+<pre>
+██████╗  █████╗ ███╗   ███╗██████╗ ███████╗███╗   ██╗███████╗██╗     ██╗ ██████╗ ███╗   ██╗
+██╔══██╗██╔══██╗████╗ ████║██╔══██╗██╔════╝████╗  ██║██╔════╝██║     ██║██╔═══██╗████╗  ██║
+██║  ██║███████║██╔████╔██║██║  ██║█████╗  ██╔██╗ ██║█████╗  ██║     ██║██║   ██║██╔██╗ ██║
+██║  ██║██╔══██║██║╚██╔╝██║██║  ██║██╔══╝  ██║╚██╗██║██╔══╝  ██║     ██║██║   ██║██║╚██╗██║
+██████╔╝██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║ ╚████║███████╗███████╗██║╚██████╔╝██║ ╚████║
+╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝     ╚══════╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+</pre>
+
+</div>
+
+---
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/PROJECT-DAMNDELION-111111?style=for-the-badge&labelColor=0d0d0d"/>
+<img src="https://img.shields.io/badge/TYPE-WEB%20READING%20PLATFORM-1a1a1a?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/FOCUS-READING%20EXPERIENCE-2b2b2b?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/STATUS-IN%20DEVELOPMENT-3a3a3a?style=for-the-badge"/>
+
+</div>
+
+---
+
+## // OVERVIEW
+
+Damndelion adalah platform membaca manga, manhwa, dan manhua yang dirancang sebagai ruang kerja visual untuk membaca dan menjelajahi komik digital.
+
+Alih-alih sekadar aplikasi reader biasa, proyek ini dibangun dengan pendekatan “studio workspace”, di mana setiap halaman terasa seperti lembar kerja ilustrasi yang hidup — terstruktur, rapi, tetapi tetap punya karakter visual yang kuat.
+
+Fokus utamanya bukan hanya pada akses konten, tetapi pada bagaimana sebuah cerita dibaca, dialami, dan dinavigasi melalui antarmuka yang terasa seperti meja kerja seorang ilustrator.
+
+---
+
+## // DESCRIPTION
+
+Damndelion mengeksplorasi pengalaman membaca yang lebih imersif melalui pendekatan desain yang terinspirasi dari ruang kerja kreatif visual.
+
+Setiap elemen UI diperlakukan seperti bagian dari proses sketsa: ada struktur, ritme, dan ruang kosong yang sengaja dibiarkan agar mata bisa beristirahat.
+
+Tujuannya adalah menciptakan keseimbangan antara keteraturan dan ekspresi visual, sehingga pengguna tidak hanya membaca cerita, tetapi juga merasakan alur visual yang mengalir seperti halaman yang sedang digarap.
 
 
-
-## Deskripsi
-
-Damndelion dirancang sebagai alternatif web baca manga dengan pengalaman yang lebih bersih dan cepat. Navigasi dibuat sederhana, loading ringan, dan reader dioptimalkan agar pengguna bisa membaca tanpa gangguan.
-
-## Fitur Utama
-
-- Akses gratis untuk membaca manga, manhwa, dan manhua
-- Tampilan modern dan responsif
-- Dark mode dan light mode
-- Pencarian judul dengan cepat
-- Halaman detail komik
-- Navigasi chapter (previous, next, dan list)
-- Halaman populer, terbaru, dan trending
-- Skeleton loading untuk pengalaman yang lebih halus
-
-## Teknologi
-
-- React + Vite
-- React Router
-- Tailwind CSS
-- REST API
-
-## Cara Menjalankan
-
-```bash
-npm install
-npm run dev

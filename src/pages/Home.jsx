@@ -1,183 +1,195 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getHome } from "../utils/api";
-import { Flame, RefreshCw, List, Clock } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { getTrending, getLatest } from "../utils/api";
 
-export default function Home() {
-  const [data, setData] = useState(null);
-  const [index, setIndex] = useState(0);
+import HomeLeft from "../components/home/HomeLeft";
+import HomeCenter from "../components/home/HomeCenter";
+import HomeRight from "../components/home/HomeRight";
 
-  const navigate = useNavigate();
+export default function HomeContent() {
+  const [trending, setTrending] = useState([]);
+  const [latest, setLatest] = useState([]);
+
+  const [moveLeftNote, setMoveLeftNote] = useState(false);
+  const [moveRightNote, setMoveRightNote] = useState(false);
 
   useEffect(() => {
-    getHome().then(setData);
+    (async () => {
+      try {
+        const [t, l] = await Promise.all([getTrending(), getLatest()]);
+        setTrending(t?.trending || []);
+        setLatest(l?.comics || []);
+      } catch (e) {
+        console.error("HOME FETCH ERROR:", e);
+      }
+    })();
   }, []);
 
-  useEffect(() => {
-    if (!data?.latest) return;
+  // SAFETY (memo biar gak recalculated tiap render)
+  const hero = trending[0] || null;
+  const heroMini = useMemo(() => trending.slice(1, 3), [trending]);
+  const trendingList = useMemo(() => trending.slice(3, 9), [trending]);
 
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % data.latest.length);
-    }, 10000);
+  // FIXED random objects (biar tidak regen tiap render -> ini besar impact perf)
+  const objects = useMemo(() => {
+    const types = [
+      "desk-clip",
+      "desk-tape",
+      "desk-ring",
+      "desk-staple",
+      "desk-doodle",
+      "paper-piece",
+    ];
 
-    return () => clearInterval(interval);
-  }, [data]);
+    return Array.from({ length: 34 }, (_, i) => {
+      const type = types[i % types.length];
 
-  const genres = [
-    { value: "action", name: "Action" },
-    { value: "adventure", name: "Adventure" },
-    { value: "comedy", name: "Comedy" },
-    { value: "drama", name: "Drama" },
-    { value: "fantasy", name: "Fantasy" },
-    { value: "isekai", name: "Isekai" },
-    { value: "romance", name: "Romance" },
-    { value: "school-life", name: "School" },
-    { value: "sci-fi", name: "Sci-fi" },
-    { value: "seinen", name: "Seinen" },
-    { value: "shounen", name: "Shounen" },
-    { value: "slice-of-life", name: "Slice" },
-    { value: "sports", name: "Sports" },
-    { value: "supernatural", name: "Supernatural" },
-    { value: "thriller", name: "Thriller" },
-  ];
-
-  const list = (data?.latest || []).filter(
-    (item) =>
-      !item.title.toLowerCase().includes("komiku") &&
-      !item.title.toLowerCase().includes("apk")
-  );
-
-  const getIndex = (i) => (i + list.length) % list.length;
-
-  const getId = (link) => {
-    return link.replace("/manga/", "").replaceAll("/", "");
-  };
+      return {
+        id: i,
+        type,
+        top: (i * 7.3) % 92,
+        left: (i * 11.7) % 94,
+        rotate: (i * 37) % 360,
+        scale: 0.7 + ((i % 5) * 0.1),
+        opacity: 0.2 + ((i % 6) * 0.06),
+      };
+    });
+  }, []);
 
   return (
-    <div className="w-full min-h-[calc(100vh-12rem)] flex flex-col bg-card rounded-xl shadow-sm items-center gap-8 pb-10">
+    <main className="relative min-h-screen overflow-x-hidden text-[#1e1e1e]">
 
-      {/* 🔥 HERO */}
-      <div className="relative w-full max-w-6xl h-65 sm:h-80 md:h-95 flex items-center justify-center overflow-hidden">
+      {/* BACKGROUND */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-[#183153]" />
 
-        {!data && (
-          <div className="flex gap-4 bg-card rounded-sm shadow-md">
-            {[1, 2, 3].map((i) => (
+        <div className="absolute inset-0 opacity-[0.28]" style={{
+          backgroundImage: `linear-gradient(to right, rgba(255,255,255,.18) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(255,255,255,.18) 1px, transparent 1px)`,
+          backgroundSize: "34px 34px",
+        }} />
+
+        <div className="absolute inset-0 opacity-[0.10]" style={{
+          backgroundImage: `linear-gradient(to right, rgba(255,255,255,.08) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(255,255,255,.08) 1px, transparent 1px)`,
+          backgroundSize: "8px 8px",
+        }} />
+
+        <div className="absolute inset-0" style={{
+          background: `radial-gradient(circle at top left, rgba(255,255,255,.08), transparent 30%),
+                       radial-gradient(circle at bottom right, rgba(0,0,0,.35), transparent 45%)`,
+        }} />
+      </div>
+
+      {/* RANDOM OBJECTS */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-[2]">
+        {objects.map((item) => (
+          <div
+            key={item.id}
+            className={item.type}
+            style={{
+              position: "absolute",
+              top: item.top + "%",
+              left: item.left + "%",
+              transform: `rotate(${item.rotate}deg) scale(${item.scale})`,
+              opacity: item.opacity,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* CONTENT */}
+      <div className="relative z-10">
+        <div className="max-w-[1450px] mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6">
+
+          {/* HERO */}
+          <section className="relative  md:-mt-20 md:scale-95">
+            <div className="max-w-[980px] mx-auto relative">
+
+              {/* LEFT NOTE */}
               <div
-                key={i}
-                className={`
-                  w-60 sm:w-75 md:w-100 aspect-video bg-card rounded-2xl animate-pulse
-                  ${i !== 2 ? "opacity-60 scale-90" : ""}
-                `}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* ✅ REAL DATA */}
-        {data && list.length > 0 &&
-          [-1, 0, 1].map((offset) => {
-            const i = getIndex(index + offset);
-            const item = list[i];
-            const isCenter = offset === 0;
-
-            return (
-              <div
-                key={i}
-                onClick={() => setIndex(i)}
-                className={`
-                  absolute transition-all duration-500 cursor-pointer bg-card rounded-sm shadow-md
-                  ${isCenter
-                    ? "scale-100 z-10 opacity-100"
-                    : "scale-90 md:scale-80 z-5 opacity-60"}
-                  ${offset === -1 && "-translate-x-40 md:-translate-x-72"}
-                  ${offset === 1 && "translate-x-40 md:translate-x-72"}
-                `}
+                onClick={() => setMoveLeftNote(v => !v)}
+                className={`absolute left-[-15px] sm:left-[-25px] xl:left-[-120px] top-[60px] sm:top-[100px] xl:top-[120px] w-[115px] sm:w-[130px] xl:w-[160px] rotate-[-7deg] bg-[#fff6d9] border border-black/10 shadow-[8px_8px_0px_rgba(0,0,0,.12)] p-3 sm:p-4 z-20 transition-all duration-700 ease-out select-none cursor-pointer sm:translate-x-0 ${
+                  moveLeftNote ? "-translate-x-[95px] rotate-[-18deg] opacity-40" : ""
+                }`}
               >
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/manga/${getId(item.link)}`);
-                  }}
-                  className="w-60 sm:w-75 md:w-100 aspect-video bg-card rounded-2xl overflow-hidden relative shadow-md hover:shadow-lg transition"
-                >
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
-
-                  <div className="absolute bottom-0 left-0 w-full p-3 bg-text/50">
-                    <h3 className="text-xs sm:text-sm font-bold text-bg line-clamp-1">
-                      {item.title}
-                    </h3>
-                    <p className="text-[10px] sm:text-xs text-bg/80">
-                      {item.chapter}
-                    </p>
-                  </div>
-                </div>
+                <p className="text-[7px] sm:text-[9px] tracking-[0.25em] uppercase opacity-50">
+                  Editor Memo
+                </p>
+                <h3 className="mt-2 text-[11px] sm:text-sm font-black leading-tight">
+                  Manga Workspace
+                </h3>
+                <div className="my-2 sm:my-3 h-[1px] bg-black/10" />
+                <p className="text-[9px] sm:text-[11px] leading-relaxed opacity-70">
+                  Inspired by manga editor desks, clipped drafts and messy archive boards.
+                </p>
               </div>
-            );
-          })}
-      </div>
 
-      {/* 🔥 MENU (NO SKELETON) */}
-      <div className="w-full max-w-6xl grid grid-cols-2 sm:grid-cols-4 gap-3 px-3">
-        {[
-          { name: "Popular", icon: Flame, path: "/popular" },
-          { name: "Latest", icon: Clock, path: "/ongoing" },
-          { name: "Trending", icon: RefreshCw, path: "/trending" },
-          { name: "List", icon: List, path: "/list" },
-        ].map((item) => {
-          const Icon = item.icon;
+              {/* RIGHT NOTE */}
+              <div
+                onClick={() => setMoveRightNote(v => !v)}
+                className={`absolute right-[-8px] sm:right-[-20px] xl:right-[-70px] top-[90px] sm:top-[120px] w-[80px] sm:w-[90px] xl:w-[100px] h-[80px] sm:h-[90px] xl:h-[100px] rotate-[8deg] bg-[#ffe97a] border border-black/10 shadow-[7px_7px_0px_rgba(0,0,0,.14)] flex items-center justify-center text-center p-2 sm:p-3 z-20 transition-all duration-700 ease-out select-none cursor-pointer ${
+                  moveRightNote ? "translate-x-[90px] rotate-[18deg] opacity-40" : ""
+                }`}
+              >
+                <p className="text-[8px] sm:text-[10px] font-black leading-snug">
+                  NEW<br/>UPDATE<br/>BOARD
+                </p>
+              </div>
 
-          return (
-            <button
-              key={item.name}
-              onClick={() => navigate(item.path)}
-              className="
-                w-full flex flex-col items-center justify-center gap-1
-                py-4 rounded-xl text-xs sm:text-sm
-                bg-primary text-bg font-bold
-                shadow-sm hover:shadow-md
-                hover:bg-primary/80
-                active:scale-95
-                transition-all duration-200
-              "
-            >
-              <Icon size={18} />
-              {item.name}
-            </button>
-          );
-        })}
-      </div>
+              {/* MINI NOTE */}
+              <div className="absolute left-[8px] sm:left-[30px] bottom-[-20px] sm:bottom-[-10px] rotate-[-10deg] bg-[#f8edd1] border border-black/10 px-3 py-2 shadow-[5px_5px_0px_rgba(0,0,0,.12)] z-20">
+                <p className="text-[8px] sm:text-[9px] tracking-[0.25em] uppercase opacity-60">
+                  serialized drafts
+                </p>
+              </div>
 
-      {/* 🔥 GENRE (NO SKELETON) */}
-      <div className="w-full max-w-6xl px-3 flex flex-col gap-3">
+              <div className="scale-[0.93] sm:scale-100 origin-top">
+                <HomeCenter hero={hero} heroMini={heroMini} />
+              </div>
 
-        <h2 className="text-sm font-bold text-text">
-          Browse by Genre
-        </h2>
+            </div>
+          </section>
 
-        <div className="flex flex-wrap gap-2">
-          {genres.map((genre) => (
-            <button
-              key={genre.value}
-              onClick={() => navigate(`/genre/${genre.value}`)}
-              className="
-                px-3 py-1 text-xs rounded-full
-                bg-card text-text
-                border border-text/10
-                hover:bg-primary/10 hover:border-primary/40
-                transition
-              "
-            >
-              {genre.name}
-            </button>
-          ))}
+          {/* BOTTOM */}
+          <section className="grid grid-cols-1 lg:grid-cols-[1fr_220px_1fr] gap-4 sm:gap-5 xl:gap-7 items-start">
+
+            <div className="order-1 relative">
+ 
+              <div className="scale-[0.96] sm:scale-100 origin-top">
+                <HomeLeft trendingList={trendingList} />
+              </div>
+            </div>
+
+            <div className="order-3 lg:order-2 relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-[90px] h-[26px] rotate-[-4deg] bg-[#fff6b3]/70 border border-black/10 backdrop-blur-sm z-20" />
+
+              <div className="relative bg-[#f8f1de] border-2 border-black/10 min-h-[320px] sm:min-h-[420px] rotate-[-2deg] shadow-[10px_10px_0px_rgba(0,0,0,.14)] p-4 sm:p-5 overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.05] mix-blend-multiply paper-noise" />
+
+                <div className="relative z-10 text-center">
+                  <div className="text-[38px] sm:text-[52px] font-black opacity-70">漫</div>
+                  <p className="mt-3 text-[9px] sm:text-[10px] tracking-[0.35em] uppercase opacity-50">
+                    Desk Memo
+                  </p>
+                  <h3 className="mt-2 text-lg sm:text-xl font-black">
+                    DAMNDELION
+                  </h3>
+                </div>
+
+              </div>
+            </div>
+
+            <div className="order-2 lg:order-3 relative">
+ 
+              <div className="scale-[0.96] sm:scale-100 origin-top">
+                <HomeRight latest={latest} />
+              </div>
+            </div>
+
+          </section>
+
         </div>
-
       </div>
-
-    </div>
+    </main>
   );
 }

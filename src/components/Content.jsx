@@ -9,10 +9,11 @@ import Latest from "../pages/Latest";
 import Popular from "../pages/Popular";
 import SearchResult from "../pages/SearchResult";
 import Trending from "../pages/Trending";
+import Genres from "../pages/Genres";
 
 export default function Content() {
     return (
-        <div className="w-full h-auto">
+        <div className="w-full overflow-hidden h-auto">
             <Routes>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/list" element={<List/>}/>
@@ -20,6 +21,7 @@ export default function Content() {
                 <Route path="/latest" element={<Latest/>}/>
                 <Route path="/trending" element={<Trending/>}/>
                 <Route path="/search" element={<SearchResult/>}/>
+                <Route path="/genres" element={<Genres/>}/>
                 <Route path="/genre/:genre" element={<Genre/>}/>
                 <Route path="/manga/:slug" element={<Manga/>}/>
                 <Route path="/chapter/:slug" element={<Chapter/>}/>   
