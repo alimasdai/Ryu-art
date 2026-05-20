@@ -89,7 +89,7 @@ export default function HomeLeft() {
 
                 <div className="absolute top-2 left-2 px-2 py-1 bg-[#ffed8a] border border-black/10 text-[9px] font-black tracking-[0.2em] flex items-center gap-1">
                   <TrendingUp size={10} />
-                  putri
+                  dinda
                 </div>
 
                 <div className="absolute bottom-2 left-2 right-2">
