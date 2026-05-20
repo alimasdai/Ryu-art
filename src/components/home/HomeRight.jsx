@@ -1,31 +1,65 @@
 import { useEffect, useMemo, useState } from "react";
 import { Clock3, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import bangali1 from "../../assets/bangali1.jpeg";
+import bangali2 from "../../assets/bangali2.jpeg";
 
-export default function HomeRight({ latest = [] }) {
+export default function HomeRight() {
   const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
   const [autoSlide, setAutoSlide] = useState(true);
 
+  // DUMMY DATA
+  const latest = [
+    {
+      title: "Bangali Memories",
+      image: bangali1,
+    },
+    {
+      title: "The Last Bengali Letter",
+      image: bangali2,
+    },
+
+  ];
+
   const total = latest.length;
 
   const paperStyle = useMemo(
-    () => ["rotate-[-2deg]", "rotate-[1.5deg]", "rotate-[-1deg]", "rotate-[2deg]"],
+    () => [
+      "rotate-[-2deg]",
+      "rotate-[1.5deg]",
+      "rotate-[-1deg]",
+      "rotate-[2deg]",
+    ],
     []
   );
 
   const clipColor = useMemo(
-    () => ["paper-clip-yellow", "paper-clip-blue", "paper-clip-red", "paper-clip-green"],
+    () => [
+      "paper-clip-yellow",
+      "paper-clip-blue",
+      "paper-clip-red",
+      "paper-clip-green",
+    ],
     []
   );
 
   const clipPosition = useMemo(
-    () => ["paper-clip-rt", "paper-clip-lt", "paper-clip-rb", "paper-clip-lb"],
+    () => [
+      "paper-clip-rt",
+      "paper-clip-lt",
+      "paper-clip-rb",
+      "paper-clip-lb",
+    ],
     []
   );
 
-  const getSlug = (link = "") => link.replace("/manga/", "").replaceAll("/", "");
+  // OPTIONAL SLUG
+  const getSlug = (link) => {
+    if (!link) return "";
+    return link.replace(/^\/+/, "");
+  };
 
   useEffect(() => {
     if (!autoSlide || total <= 1) return;
@@ -42,7 +76,6 @@ export default function HomeRight({ latest = [] }) {
 
   return (
     <section className="space-y-4 order-3">
-
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-white/70 text-[10px] tracking-[0.35em] uppercase">
@@ -51,7 +84,6 @@ export default function HomeRight({ latest = [] }) {
         </div>
 
         <div className="flex items-center gap-2">
-
           <button
             onClick={() => {
               setAutoSlide(false);
@@ -71,13 +103,11 @@ export default function HomeRight({ latest = [] }) {
           >
             <ChevronRight size={14} />
           </button>
-
         </div>
       </div>
 
       {/* PAPER AREA */}
       <div className="relative h-[420px] sm:h-[500px] md:h-[560px] flex items-center justify-center px-2 sm:px-5">
-
         {/* STACK */}
         <div className="absolute w-[88%] sm:w-[82%] max-w-[340px] h-[88%] bg-[#b9b09e] rotate-[-10deg] rounded-[6px] shadow-[0_18px_35px_rgba(0,0,0,0.35)] border border-black/10" />
         <div className="absolute w-[90%] sm:w-[84%] max-w-[350px] h-[90%] bg-[#d7ccb6] rotate-[7deg] rounded-[6px] shadow-[0_16px_30px_rgba(0,0,0,0.28)] border border-black/10" />
@@ -86,7 +116,6 @@ export default function HomeRight({ latest = [] }) {
 
         {/* MAIN PAPER */}
         <article
-          onClick={() => navigate(`/manga/${getSlug(item.link)}`)}
           className={`
             relative w-full max-w-[380px] h-full bg-[#f8f1de] cursor-pointer
             overflow-hidden shadow-[0_25px_50px_rgba(0,0,0,0.35)]
@@ -97,7 +126,6 @@ export default function HomeRight({ latest = [] }) {
             ${clipPosition[page % 4]}
           `}
         >
-
           {/* TEXTURE */}
           <div
             className="absolute inset-0 opacity-[0.05] mix-blend-multiply pointer-events-none"
@@ -120,7 +148,6 @@ export default function HomeRight({ latest = [] }) {
             <div className="absolute inset-x-8 top-8 bottom-6 bg-black/20 blur-xl rotate-[2deg]" />
 
             <div className="relative w-full h-full bg-white p-2 sm:p-3 rotate-[-2deg] shadow-[0_12px_25px_rgba(0,0,0,0.25)]">
-
               <div className="relative w-full h-full overflow-hidden">
                 <img
                   src={item.image}
@@ -128,6 +155,7 @@ export default function HomeRight({ latest = [] }) {
                   className="absolute inset-0 w-full h-full object-cover"
                   loading="lazy"
                 />
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
               </div>
 
@@ -135,15 +163,14 @@ export default function HomeRight({ latest = [] }) {
                 <p className="text-[8px] sm:text-[9px] tracking-[0.25em] uppercase opacity-45">
                   Latest Update
                 </p>
+
                 <p className="text-[8px] opacity-40">#{page + 1}</p>
               </div>
-
             </div>
           </div>
 
           {/* CONTENT */}
           <div className="px-4 sm:px-5 pb-5 flex flex-col justify-between h-[44%] sm:h-[40%] relative z-10">
-
             <div>
               <p className="text-[9px] sm:text-[10px] tracking-[0.3em] uppercase opacity-45">
                 Manga Draft
@@ -154,28 +181,23 @@ export default function HomeRight({ latest = [] }) {
               </h3>
 
               <p className="mt-3 text-[12px] sm:text-[13px] opacity-70 font-medium">
-                {item.chapter}
               </p>
             </div>
 
             <div className="flex items-center justify-between mt-5 gap-3">
-
               <div className="flex flex-wrap gap-2">
                 <span className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] px-2 py-1 bg-black text-white">
                   Latest
                 </span>
 
                 <span className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] px-2 py-1 bg-black/10">
-                  {item.time_ago}
                 </span>
               </div>
 
               <div className="text-[10px] opacity-40 shrink-0">
                 #{page + 1}
               </div>
-
             </div>
-
           </div>
 
           <div className="absolute bottom-[-10px] left-[10%] w-[80%] h-[25px] bg-black/15 blur-xl rounded-full" />
@@ -197,7 +219,6 @@ export default function HomeRight({ latest = [] }) {
           />
         ))}
       </div>
-
     </section>
   );
 }

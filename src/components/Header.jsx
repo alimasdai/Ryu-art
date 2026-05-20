@@ -3,12 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Menu, Home, Flame, Clock, List, Star, Search, Tag, X } from "lucide-react";
 
 const NAV_ITEMS = [
-  { label: "Home", icon: Home, path: "/" },
-  { label: "Popular", icon: Flame, path: "/popular" },
-  { label: "Latest", icon: Clock, path: "/latest" },
-  { label: "List", icon: List, path: "/list" },
-  { label: "Trending", icon: Star, path: "/trending" },
-  { label: "Genres", icon: Tag, path: "/genres" },
+  { label: "Hubungi Kami", icon: Tag, path: "https://wa.me/6283895647675" },
 ];
 
 export default function HomeHeader() {
@@ -18,22 +13,7 @@ export default function HomeHeader() {
   const [focus, setFocus] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isTyping = query.length > 0;
 
-  const handleSearch = useCallback(() => {
-    const q = query.trim();
-    if (q.length < 2) return;
-    navigate(`/search?q=${encodeURIComponent(q)}`);
-    setFocus(false);
-    setMenuOpen(false);
-  }, [query, navigate]);
-
-  const go = useCallback((path) => {
-    navigate(path);
-    setMenuOpen(false);
-  }, [navigate]);
-
-  const clearSearch = useCallback(() => setQuery(""), []);
 
   return (
     <>
@@ -55,39 +35,11 @@ export default function HomeHeader() {
                 Manga Archive
               </p>
               <h1 className="text-xs sm:text-sm font-black truncate">
-                Manga Field Notes
+                Ryu Art
               </h1>
             </div>
           </div>
 
-        </div>
-
-        {/* SEARCH */}
-        <div
-          className={`hidden md:flex relative h-10 transition-all duration-300 ${
-            focus ? "w-[320px]" : "w-[220px]"
-          }`}
-        >
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => setFocus(true)}
-            onBlur={() => setTimeout(() => setFocus(false), 120)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder={isTyping ? "Press enter..." : "Search manga..."}
-            className="w-full h-full pl-4 pr-11 border border-black/10 bg-black/[0.03] text-sm outline-none"
-          />
-
-          {!isTyping ? (
-            <Search size={15} className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50" />
-          ) : (
-            <button
-              onClick={clearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100"
-            >
-              <X size={14} />
-            </button>
-          )}
         </div>
 
         {/* RIGHT */}
@@ -134,10 +86,11 @@ export default function HomeHeader() {
 <div className="p-4 flex flex-col">
 
   {NAV_ITEMS.map(({ label, icon: Icon, path }, i) => (
+    <a  href={path} target="_blank" rel="noopener noreferrer"
+>
     <div key={path} className="relative">
 
       <button
-        onClick={() => go(path)}
         className="
           w-full
           flex
@@ -171,6 +124,7 @@ export default function HomeHeader() {
       )}
 
     </div>
+    </a>
   ))}
 
 </div>

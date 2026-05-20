@@ -1,33 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
-import { getTrending, getLatest } from "../utils/api";
 
 import HomeLeft from "../components/home/HomeLeft";
 import HomeCenter from "../components/home/HomeCenter";
 import HomeRight from "../components/home/HomeRight";
 
 export default function HomeContent() {
-  const [trending, setTrending] = useState([]);
-  const [latest, setLatest] = useState([]);
+
 
   const [moveLeftNote, setMoveLeftNote] = useState(false);
   const [moveRightNote, setMoveRightNote] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const [t, l] = await Promise.all([getTrending(), getLatest()]);
-        setTrending(t?.trending || []);
-        setLatest(l?.comics || []);
-      } catch (e) {
-        console.error("HOME FETCH ERROR:", e);
-      }
-    })();
-  }, []);
 
-  // SAFETY (memo biar gak recalculated tiap render)
-  const hero = trending[0] || null;
-  const heroMini = useMemo(() => trending.slice(1, 3), [trending]);
-  const trendingList = useMemo(() => trending.slice(3, 9), [trending]);
+
 
   // FIXED random objects (biar tidak regen tiap render -> ini besar impact perf)
   const objects = useMemo(() => {
@@ -144,7 +128,7 @@ export default function HomeContent() {
               </div>
 
               <div className="scale-[0.93] sm:scale-100 origin-top">
-                <HomeCenter hero={hero} heroMini={heroMini} />
+                <HomeCenter/>
               </div>
 
             </div>
@@ -156,7 +140,7 @@ export default function HomeContent() {
             <div className="order-1 relative">
  
               <div className="scale-[0.96] sm:scale-100 origin-top">
-                <HomeLeft trendingList={trendingList} />
+                <HomeLeft/>
               </div>
             </div>
 
@@ -172,21 +156,29 @@ export default function HomeContent() {
                     Desk Memo
                   </p>
                   <h3 className="mt-2 text-lg sm:text-xl font-black">
-                    DAMNDELION
+                    RYU art
                   </h3>
-                </div>
+                                  <p className="mt-3 text-xl sm:text-xl tracking-[0.35em] font-bold opacity-50">
+                    Art mulai Rp30.000.00 sampai Rp90.000,00
+                  </p>
 
+                </div>
               </div>
             </div>
 
             <div className="order-2 lg:order-3 relative">
  
               <div className="scale-[0.96] sm:scale-100 origin-top">
-                <HomeRight latest={latest} />
+                <HomeRight/>
               </div>
             </div>
 
           </section>
+
+          <footer className="py-6 text-center text-sm text-white/50">
+            <p>&copy; 2026 DAMNDELION. All rights reserved.</p>
+            <a href="https://wa.me/6285708952132 " target="_blank" rel="noopener noreferrer">Hubungi kami</a>
+          </footer>
 
         </div>
       </div>
